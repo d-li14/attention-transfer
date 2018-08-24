@@ -110,6 +110,6 @@ and run training (e.g. using 2 GPUs):
 
 ```
 python imagenet.py --imagenetpath ~/ILSVRC2012 --depth 18 --width 1 \
-                   --teacher_params resnet-34-export.hkl --gpu_id 0,1 --ngpu 2 \
+                   --teacher_params resnet-34-export.pth --gpu_id 0,1 --ngpu 2 \
                    --beta 1e+3
 ```

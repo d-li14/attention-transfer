@@ -238,8 +238,11 @@ def main():
         state['sample'].append(state['train'])
 
     def on_forward(state):
+        loss = state['loss'].item()
         classacc.add(state['output'].data, state['sample'][1])
-        meter_loss.add(state['loss'].item())
+        meter_loss.add(loss)
+        if state['train']:
+            state['iterator'].set_postfix(loss=loss)
 
     def on_start(state):
         state['epoch'] = epoch

@@ -57,7 +57,6 @@ parser.add_argument('--alpha', default=0, type=float)
 parser.add_argument('--beta', default=0, type=float)
 
 # Device options
-parser.add_argument('--cuda', action='store_true')
 parser.add_argument('--save', default='', type=str,
                     help='save parameters and logs in this folder')
 parser.add_argument('--ngpu', default=1, type=int,
@@ -200,7 +199,7 @@ def main():
     print('\nParameters:')
     utils.print_tensor_dict(params)
 
-    n_parameters = sum(p.numel() for p in list(params_s.values()))
+    n_parameters = sum(p.numel() for p in list(params_s.values()) if p.requires_grad)
     print('\nTotal number of parameters:', n_parameters)
 
     meter_loss = tnt.meter.AverageValueMeter()
@@ -210,7 +209,7 @@ def main():
     meters_at = [tnt.meter.AverageValueMeter() for i in range(3)]
 
     if not os.path.exists(opt.save):
-        os.mkdir(opt.save)
+        os.makedirs(opt.save)
 
     def h(sample):
         inputs = utils.cast(sample[0], opt.dtype).detach()

@@ -57,7 +57,6 @@ parser.add_argument('--beta', default=0, type=float)
 
 
 # Device options
-parser.add_argument('--cuda', action='store_true')
 parser.add_argument('--save', default='', type=str,
                     help='save parameters and logs in this folder')
 parser.add_argument('--ngpu', default=1, type=int,
@@ -212,7 +211,7 @@ def main():
     epoch_step = json.loads(opt.epoch_step)
 
     if not os.path.exists(opt.save):
-        os.mkdir(opt.save)
+        os.makedirs(opt.save)
 
     f_s, params_s = define_student(opt.depth, opt.width)
     f_t, params_t = define_teacher(opt.teacher_params)

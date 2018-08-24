@@ -312,18 +312,19 @@ def main():
         classacc.reset()
         timer_test.reset()
 
-        engine.test(h, iter_test)
+        with torch.no_grad():
+            engine.test(h, iter_test)
 
         print(log({
             "train_loss": train_loss[0],
-            "train_acc": train_acc,
+            "train_acc": train_acc[0],
             "test_loss": meter_loss.value()[0],
-            "test_acc": classacc.value(),
+            "test_acc": classacc.value()[0],
             "epoch": state['epoch'],
             "n_parameters": n_parameters,
             "train_time": train_time,
             "test_time": timer_test.value(),
-            "at_losses": [m.value() for m in meters_at],
+            "at_losses": [m.value()[0] for m in meters_at],
            }, state))
 
     engine = Engine()

@@ -36,7 +36,7 @@ parser = argparse.ArgumentParser(description='Wide Residual Networks')
 parser.add_argument('--depth', default=16, type=int)
 parser.add_argument('--width', default=1, type=float)
 parser.add_argument('--dataset', default='CIFAR10', type=str)
-parser.add_argument('--dataroot', default='.', type=str)
+parser.add_argument('--dataroot', default='./data', type=str)
 parser.add_argument('--dtype', default='float', type=str)
 parser.add_argument('--nthread', default=4, type=int)
 parser.add_argument('--teacher_id', default='', type=str)
@@ -216,7 +216,6 @@ def main():
         targets = utils.cast(sample[1], 'long')
         if opt.teacher_id != '':
             y_s, y_t, loss_groups = utils.data_parallel(f, inputs, params, sample[2], range(opt.ngpu))
-            loss_groups = [v.sum() for v in loss_groups]
             [m.add(v.item()) for m, v in zip(meters_at, loss_groups)]
             return utils.distillation(y_s, y_t, targets, opt.temperature, opt.alpha) \
                    + opt.beta * sum(loss_groups), y_s
@@ -250,7 +249,7 @@ def main():
         meter_loss.reset()
         timer_train.reset()
         [meter.reset() for meter in meters_at]
-        state['iterator'] = tqdm(train_loader)
+        state['iterator'] = tqdm(train_loader, dynamic_ncols=True)
 
         epoch = state['epoch'] + 1
         if epoch in epoch_step:
@@ -265,7 +264,8 @@ def main():
         classacc.reset()
         timer_test.reset()
 
-        engine.test(h, test_loader)
+        with torch.no_grad():
+            engine.test(h, test_loader)
 
         test_acc = classacc.value()[0]
         print(log({
@@ -278,7 +278,7 @@ def main():
             "n_parameters": n_parameters,
             "train_time": train_time,
             "test_time": timer_test.value(),
-            "at_losses": [m.value() for m in meters_at],
+            "at_losses": [m.value()[0] for m in meters_at],
            }, state))
         print('==> id: %s (%d/%d), test_acc: \33[91m%.2f\033[0m' % \
                        (opt.save, state['epoch'], opt.epochs, test_acc))

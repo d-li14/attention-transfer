@@ -216,6 +216,7 @@ def main():
         targets = utils.cast(sample[1], 'long')
         if opt.teacher_id != '':
             y_s, y_t, loss_groups = utils.data_parallel(f, inputs, params, sample[2], range(opt.ngpu))
+            loss_groups = [v.sum() for v in loss_groups]
             [m.add(v.item()) for m, v in zip(meters_at, loss_groups)]
             return utils.distillation(y_s, y_t, targets, opt.temperature, opt.alpha) \
                    + opt.beta * sum(loss_groups), y_s

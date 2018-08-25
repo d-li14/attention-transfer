@@ -93,10 +93,10 @@ def get_iterator(imagenetpath, batch_size, nthread, mode):
 
 
 def define_teacher(params_file):
-    """ Defines student resnet
+    """ Defines teacher resnet
         
         Network size is determined from parameters, assuming
-        pre-activation basic-block resnet (ResNet-18 or ResNet-34)
+        basic-block resnet (ResNet-18 or ResNet-34)
     """
     params = torch.load(params_file)
 
@@ -141,7 +141,7 @@ def define_teacher(params_file):
 
 def define_student(depth, width):
     definitions = {18: [2,2,2,2],
-                   34: [3,4,6,5]}
+                   34: [3,4,6,3]}
     assert depth in list(definitions.keys())
     widths = [int(w * width) for w in (64, 128, 256, 512)]
     blocks = definitions[depth]
@@ -326,6 +326,8 @@ def main():
             "test_time": timer_test.value(),
             "at_losses": [m.value()[0] for m in meters_at],
            }, state))
+        print('==> id: %s (%d/%d), test_acc: \33[91m%.2f\033[0m' % \
+                       (opt.save, state['epoch'], opt.epochs, test_acc))
 
     engine = Engine()
     engine.hooks['on_sample'] = on_sample

@@ -38,7 +38,7 @@ parser.add_argument('--width', default=1, type=float)
 parser.add_argument('--dataset', default='CIFAR10', type=str)
 parser.add_argument('--dataroot', default='./data', type=str)
 parser.add_argument('--dtype', default='float', type=str)
-parser.add_argument('--nthread', default=4, type=int)
+parser.add_argument('--nthread', default=8, type=int)
 parser.add_argument('--teacher_id', default='', type=str)
 
 # Training options

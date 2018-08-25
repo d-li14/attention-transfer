@@ -38,7 +38,7 @@ parser.add_argument('--dtype', default='float', type=str)
 parser.add_argument('--depth', default=18, type=int)
 parser.add_argument('--width', default=1, type=float)
 parser.add_argument('--imagenetpath', default='/home/zagoruys/ILSVRC2012', type=str)
-parser.add_argument('--nthread', default=4, type=int)
+parser.add_argument('--nthread', default=16, type=int)
 parser.add_argument('--teacher_params', default='', type=str)
 
 # Training options

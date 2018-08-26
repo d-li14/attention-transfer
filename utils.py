@@ -10,7 +10,7 @@ import torch.nn.functional as F
 def distillation(y, teacher_scores, labels, T, alpha):
     p = F.log_softmax(y/T, dim=1)
     q = F.softmax(teacher_scores/T, dim=1)
-    l_kl = F.kl_div(p, q, size_average=False) * (T**2) / y.shape[0]
+    l_kl = F.kl_div(p, q, reduction='sum') * (T**2) / y.shape[0]
     l_ce = F.cross_entropy(y, labels)
     return l_kl * alpha + l_ce * (1. - alpha)
 

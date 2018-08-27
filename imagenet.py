@@ -315,6 +315,7 @@ def main():
         with torch.no_grad():
             engine.test(h, iter_test)
 
+        test_acc = classacc.value()[0]
         print(log({
             "train_loss": train_loss[0],
             "train_acc": train_acc[0],
